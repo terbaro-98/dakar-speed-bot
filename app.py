@@ -52,4 +52,5 @@ def send_pdf_via_whatsapp(to_number, pdf_url):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render fournit la variable d’environnement PORT
+    app.run(host="0.0.0.0", port=port)
