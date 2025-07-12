@@ -1,6 +1,3 @@
-# ========================
-# requirements.txt
-# ========================
 flask
 twilio
 python-dotenv
