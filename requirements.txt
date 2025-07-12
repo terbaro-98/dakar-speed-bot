@@ -4,3 +4,4 @@
 flask
 twilio
 python-dotenv
+reportlab==4.0.4
