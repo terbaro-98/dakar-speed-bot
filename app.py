@@ -22,7 +22,15 @@ twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 def whatsapp_reply():
     incoming_msg = request.values.get("Body", "").strip()
     sender_number = request.values.get("From", "")
-    reply_text = handle_message(sender_number, incoming_msg)
+    
+    print(f"📩 Nouveau message reçu de {sender_number} : '{incoming_msg}'")
+
+    try:
+        reply_text = handle_message(sender_number, incoming_msg)
+        print(f"✏️ Réponse générée pour {sender_number} : '{reply_text}'")
+    except Exception as e:
+        print(f"❌ Erreur lors du traitement de handle_message : {e}")
+        reply_text = "Désolé, une erreur est survenue lors du traitement de votre message."
 
     resp = MessagingResponse()
     resp.message(reply_text)
@@ -30,9 +38,13 @@ def whatsapp_reply():
     # 📎 Si un PDF a été généré, l'envoyer
     session = sessions.get(sender_number)
     if session and "pdf_url" in session:
-        send_pdf_via_whatsapp(sender_number, session["pdf_url"])
+        pdf_url = session["pdf_url"]
+        print(f"📎 PDF détecté pour {sender_number} → {pdf_url}")
+        send_pdf_via_whatsapp(sender_number, pdf_url)
         session.pop("pdf_url")
         sessions[sender_number] = session
+    else:
+        print(f"ℹ️ Aucun PDF à envoyer pour {sender_number}")
 
     return str(resp)
 
@@ -48,7 +60,7 @@ def send_pdf_via_whatsapp(to_number, pdf_url):
         )
         print(f"✅ PDF envoyé à {to_number} | SID: {message.sid}")
     except Exception as e:
-        print(f"❌ Erreur lors de l'envoi du PDF : {e}")
+        print(f"❌ Erreur lors de l'envoi du PDF à {to_number} : {e}")
 
 
 @app.route("/", methods=["GET"])
