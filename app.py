@@ -51,6 +51,11 @@ def send_pdf_via_whatsapp(to_number, pdf_url):
         print(f"❌ Erreur lors de l'envoi du PDF : {e}")
 
 
+@app.route("/", methods=["GET"])
+def home():
+    return "✅ Bot WhatsApp Dakar Speed Pro est en ligne !"
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render fournit la variable d’environnement PORT
     app.run(host="0.0.0.0", port=port)
